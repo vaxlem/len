@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio & Display Text</title>
+    <style>
+        p{float: right;}
+        p[non]{display: none;}
+    </style>
+</head>
+<body>
+    <h2>Play Recorded Audio with Displayed Text</h2>
+    <button onclick="playAudio()">Play Audio</button>
+    <p non="true" id="status">Status: Waiting to Play Audio</p>
+    <br><p id="displayText"></p>
+
+    <audio id="audio" src="./mamma song n pt m bed_05212022_063558 Trim.3gp"></audio>  <!-- Replace with your file -->
+
+   
+    <script>
+        const accompanyingText = "Sit down"; // Change this to match the audio's content
+
+        function playAudio() {
+            const audio = document.getElementById("audio");
+            
+            // Reset and replay the audio
+            audio.currentTime = 0;
+            document.getElementById("status").innerText = "Playing Audio...";
+            document.getElementById("displayText").innerText = accompanyingText; // Show text
+            
+            audio.play();
+
+            audio.onended = () => {
+                document.getElementById("status").innerText = "Audio Finished. Speaking Text...";
+                speakText(accompanyingText);
+            };
+        }
+
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Audio Buttons</title>
+
+    <style>
+        p[non]{display: none;}
+    </style>
+</head>
+<body>
+    <h2>Play Recorded Audio with Displayed Text</h2>
+    
+    <button onclick="playAudio('sit-down')">Play "Sit Down"</button>
+    <button onclick="playAudio('dog')">Play "Dog"</button>
+    <button onclick="playAudio('come')">Play "Come"</button>
+    
+    <p non="true" id="status">Status: Waiting to Play Audio</p>
+    <p id="displayText"></p>
+
+    <audio id="audio"></audio> <!-- One audio element for all sounds -->
+
+    <script>
+        const audioFiles = {
+            "sit-down": { text: "Sit down", src: "./mamma song n pt m bed_05212022_063558 Trim.3gp" }, // Replace with actual file paths
+            "dog": { text: "Dog", src: "dog.mp3" },
+            "come": { text: "Come", src: "come.mp3" }
+        };
+
+        function playAudio(command) {
+            const audioElement = document.getElementById("audio");
+            const selectedAudio = audioFiles[command];
+
+            if (!selectedAudio) {
+                console.error("Audio not found for:", command);
+                return;
+            }
+
+            // Reset and set new audio source
+            audioElement.src = selectedAudio.src;
+            audioElement.currentTime = 0;
+            document.getElementById("status").innerText = `Playing "${selectedAudio.text}"...`;
+            document.getElementById("displayText").innerText = selectedAudio.text;
+
+            audioElement.play();
+
+            audioElement.onended = () => {
+                document.getElementById("status").innerText = "Audio Finished. Speaking Text...";
+                speakText(selectedAudio.text);
+            };
+        }
+
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        }
+    </script>
+</body>
+</html>
