@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuffle Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .result {
+            font-size: 48px;
+            margin: 20px;
+            color: #007bff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .catalogue {
+            margin-top: 30px;
+        }
+
+        .catalogue h2 {
+            margin-bottom: 10px;
+        }
+
+        .catalogue-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .catalogue-list li {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .reset-count {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Shuffle Game (1 - 20)</h1>
+    <div class="result" id="result">Press Draw to start</div>
+    <button onclick="draw()">Draw</button>
+    <button onclick="reset()">Reset</button>
+
+    <div class="catalogue">
+        <h2>Last Played Results</h2>
+        <ul id="catalogue-list" class="catalogue-list">
+            <!-- Last played results will appear here -->
+        </ul>
+        <button id="more-button" onclick="toggleMore()">More</button>
+    </div>
+
+    <div class="reset-count" id="reset-count">Reset Count: 0</div>
+
+    <script>
+        var availableNumbers = Array.from({ length: 20 }, (_, i) => i + 1); // 1-20 numbers
+        var playedResults = [];
+        var resetCounter = 0; // Tracks number of times the end of draws reached
+        var showMore = false; // Tracks whether to show more results
+
+        function draw() {
+            if (availableNumbers.length === 0) {
+                document.getElementById("result").innerText = "No more numbers to draw!";
+                return;
+            }
+
+            var randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            var randomNumber = availableNumbers[randomIndex];
+
+            availableNumbers.splice(randomIndex, 1);
+            document.getElementById("result").innerText = "You drew: " + randomNumber;
+
+            playedResults.push(randomNumber);
+            updateCatalogue();
+
+            if (availableNumbers.length === 0) {
+                resetCounter++;
+                document.getElementById("reset-count").innerText = "Reset Count: " + resetCounter;
+            }
+        }
+
+        function updateCatalogue() {
+            var catalogueList = document.getElementById("catalogue-list");
+            catalogueList.innerHTML = ''; // Clear the current list
+
+            // Show only the top 6 results initially in reverse order
+            playedResults.slice(-6).reverse().forEach(function(result, index) {
+                var listItem = document.createElement("li");
+                listItem.innerText = "Result " + (playedResults.length - index) + ": " + result;
+                catalogueList.appendChild(listItem);
+            });
+
+            // Show remaining results if "More" has been clicked, in reverse order
+            if (showMore) {
+                playedResults.slice(0, playedResults.length - 6).reverse().forEach(function(result, index) {
+                    var listItem = document.createElement("li");
+                    listItem.innerText = "Result " + (playedResults.length - 6 - index) + ": " + result;
+                    catalogueList.appendChild(listItem);
+                });
+            }
+        }
+
+        function toggleMore() {
+            showMore = !showMore; // Toggle the state
+            updateCatalogue(); // Update the display
+            document.getElementById("more-button").innerText = showMore ? "Less" : "More"; // Change button text
+        }
+
+        function reset() {
+            document.getElementById("result").innerText = "Press Draw to start";
+            availableNumbers = Array.from({ length: 20 }, (_, i) => i + 1);
+            playedResults = []; // Clear played results when resetting the game
+            showMore = false; // Reset "More" state
+            document.getElementById("more-button").innerText = "More"; // Reset button text
+            updateCatalogue(); // Update the display
+        }
+    </script>
+
+</body>
+</html>
