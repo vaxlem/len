@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuffle Sales</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-image: url(./image/APPLE.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position:center;
+        }
+
+        .result {
+            font-size: 48px;
+            margin: 20px;
+            color: #007bff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .catalogue {
+            margin-top: 30px;
+        }
+
+        .catalogue h2 {
+            margin-bottom: 10px;
+        }
+
+        .catalogue-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .catalogue-list li {
+            font-size: 24px;
+            color: #333;
+        }
+        .view{
+            font-size: 60px;
+            text-decoration:underline;
+            font-weight:bolder;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 >fARM-<span class="view">2</span>-fORK</h1>
+    <div class="result" id="result">Press Draw to start</div>
+    <button onclick="draw()">Draw</button>
+    <button onclick="reset()">Reset</button>
+
+    <div class="catalogue">
+        <h2>Last Played Results</h2>
+        <ul id="catalogue-list" class="catalogue-list">
+            <!-- Last played results will appear here -->
+        </ul>
+    </div>
+
+    <script>
+        // Array to store the available numbers
+        var availableNumbers = Array.from({ length: 20 }, (_, i) => i + 1);
+        var playedResults = [];
+
+        function draw() {
+            // Check if any numbers are left to draw
+            if (availableNumbers.length === 0) {
+                document.getElementById("result").innerText = "No more numbers to draw!";
+                return;
+            }
+
+            // Get a random index from available numbers
+            var randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            var randomNumber = availableNumbers[randomIndex];
+
+            // Remove the drawn number from the availableNumbers array
+            availableNumbers.splice(randomIndex, 1);
+
+            // Display the result
+            document.getElementById("result").innerText = "You drew: " + randomNumber;
+
+            // Add the result to the playedResults array
+            playedResults.push(randomNumber);
+            
+            // Update the catalogue with the last played results
+            updateCatalogue();
+        }
+
+        function updateCatalogue() {
+            var catalogueList = document.getElementById("catalogue-list");
+            catalogueList.innerHTML = ''; // Clear the current list
+
+            // Populate the list with played results
+            // playedResults.forEach(function(result, index) {
+            //     var listItem = document.createElement("li");
+            //     listItem.innerText = "Result " + (index + 1) + ": " + result;
+            //     catalogueList.appendChild(listItem);
+            // });
+                // Populate the list with played results in reverse order (last played to first played)
+                playedResults.slice().reverse().forEach(function(result, index) {
+                var listItem = document.createElement("li");
+                listItem.innerText = "Result " + (playedResults.length - index) + ": " + result;
+                catalogueList.appendChild(listItem);
+            });
+        }
+
+        function reset() {
+            // Clear the current result
+            document.getElementById("result").innerText = "Press Draw to start";
+
+            // Reset the available numbers and played results, but preserve the catalogue
+            availableNumbers = Array.from({ length: 20 }, (_, i) => i + 1);
+        }
+    </script>
+
+</body>
+</html>
